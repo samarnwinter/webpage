@@ -76,8 +76,6 @@ if page == "🏠 Home":
             <h2 style='color: #1e3d59;'>Stochastic Modeling of Ribosome Dynamics</h2>
             <p style='color: #555; line-height: 1.6;'>
                 I work in the area of theoritical biophysics, wherein I develop the mathematical and biophysical models to adress the questions related to the biological systems. 
-               
-            </p>
         </div>
         """, unsafe_allow_html=True)
         
