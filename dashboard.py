@@ -1,7 +1,7 @@
 import streamlit as st
 
 # --- PAGE CONFIGURATION ---
-st.set_page_config(page_title="Inayat | Theoretical Biophysics Node", layout="wide")
+st.set_page_config(page_title="Inayat | Theoretical Biophysics ", layout="wide")
 
 # --- CUSTOM CSS: MINIMALIST LUXURY ---
 st.markdown("""
