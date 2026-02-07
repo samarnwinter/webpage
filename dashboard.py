@@ -1,188 +1,173 @@
 import streamlit as st
 
-# --- ULTIMATE PAGE CONFIG ---
+# --- PAGE CONFIG ---
 st.set_page_config(page_title="Dr. Inayat | Research Hub", layout="wide")
 
-# --- HIGH-END CSS INJECTION ---
+# --- CUSTOM CSS: HIGH-CONTRAST ELITE THEME ---
 st.markdown("""
     <style>
-    /* Premium Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@1&family=Montserrat:wght@300;600;800&display=swap');
 
-    /* Global Transitions */
-    .main { background-color: #0a0e14; color: #e2e8f0; }
-    
-    /* Navigation Bar Replacement */
-    .nav-container {
-        display: flex;
-        justify-content: space-around;
-        background: #111827;
-        padding: 1rem;
-        border-bottom: 2px solid #b59410;
-        margin-bottom: 2rem;
-        border-radius: 0 0 15px 15px;
+    /* Global Foundation */
+    .stApp {
+        background-color: #0f172a; /* Deep Navy/Slate Background for the whole page */
+        color: #f1f5f9;
     }
 
-    /* Executive Cards */
-    .exec-card {
-        background: #1f2937;
-        border: 1px solid #374151;
-        border-radius: 15px;
-        padding: 25px;
-        margin-bottom: 20px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .exec-card:hover {
-        border: 1px solid #b59410;
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    /* Sidebar - High Contrast Black */
+    [data-testid="stSidebar"] {
+        background-color: #020617 !important;
+        border-right: 1px solid #1e293b;
     }
 
-    /* Typography */
-    .hero-text {
-        font-family: 'Cinzel', serif;
-        color: #b59410;
-        font-size: 3.5rem;
-        text-align: center;
-        margin-bottom: 0px;
-    }
-    .sub-hero {
+    /* Typography Overhaul */
+    h1, h2, h3 {
         font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+    .hero-title {
+        font-size: 4rem;
+        color: #f8fafc;
+        margin-bottom: 0px;
         text-align: center;
-        color: #9ca3af;
-        letter-spacing: 4px;
-        text-transform: uppercase;
-        font-size: 0.9rem;
+    }
+    .hero-subtitle {
+        font-family: 'Libre+Baskerville', serif;
+        font-style: italic;
+        font-size: 1.2rem;
+        color: #94a3b8;
+        text-align: center;
         margin-bottom: 3rem;
     }
 
-    /* Journal Links Styling */
-    .journal-btn {
-        display: block;
-        text-align: center;
-        background: #111827;
-        color: #b59410 !important;
-        border: 1px solid #b59410;
-        padding: 12px;
-        margin: 10px 0;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: 0.3s;
+    /* Content Cards - Glassmorphism */
+    .content-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        margin-bottom: 25px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
-    .journal-btn:hover {
-        background: #b59410;
-        color: #111827 !important;
+    
+    .card-title {
+        color: #fbbf24; /* Gold accent */
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+        padding-bottom: 10px;
     }
 
-    /* Remove Streamlit default elements */
+    .card-text {
+        color: #e2e8f0; /* Ultra-clear light grey for readability */
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+
+    /* Status Bar Styling */
+    .status-bar {
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        color: #7dd3fc;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+
+    /* Hide Streamlit infantile elements */
     header {visibility: hidden;}
-    [data-testid="stSidebar"] {background-color: #0a0e14 !important;}
+    footer {visibility: hidden;}
+    .stButton>button {
+        background-color: transparent;
+        color: #fbbf24;
+        border: 2px solid #fbbf24;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #fbbf24;
+        color: #0f172a;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR NAV ---
+# --- NAVIGATION ---
 with st.sidebar:
-    st.markdown("<h1 style='color: #b59410; font-family: Cinzel;'>NODE V3</h1>", unsafe_allow_html=True)
-    page = st.radio("SELECT DOMAIN", ["Research Overview", "Journal Suites", "Publications", "Scholar Terminal"])
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #fbbf24; font-size: 2rem;'>NODE V3</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #64748b;'>Theoretical Biophysics</p>", unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown("### Theoretical Biophysics")
+    page = st.radio("SELECT DOMAIN", ["Research Overview", "Journal Suites", "Publications", "Scholar Terminal"])
 
 # --- PAGE 1: RESEARCH OVERVIEW ---
 if page == "Research Overview":
-    st.markdown("<h1 class='hero-text'>DR. INAYAT</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-hero'>Theoretical Biophysics & Stochastic Dynamics</p>", unsafe_allow_html=True)
+    st.markdown("<h1 class='hero-title'>DR. INAYAT</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='hero-subtitle'>Theoretical Biophysics & Stochastic Dynamics</p>", unsafe_allow_html=True)
     
     col_l, col_r = st.columns([1.5, 1])
     
     with col_l:
-        st.markdown("""
-        <div class='exec-card'>
-            <h3 style='color: #b59410;'>Research Framework</h3>
-            <p style='line-height: 1.8; color: #d1d5db;'>
+        st.markdown(f"""
+        <div class="content-card">
+            <div class="card-title">Research Framework</div>
+            <div class="card-text">
                 Our research integrates non-equilibrium statistical mechanics with protein synthesis kinetics. 
-                By refining the <strong>Totally Asymmetric Simple Exclusion Process (TASEP)</strong>, we bridge 
-                the gap between theoretical physics and ribosomal dynamics.
-            </p>
+                By refining the <strong>Totally Asymmetric Simple Exclusion Process (TASEP)</strong>, we bridge the gap 
+                between theoretical physics and ribosomal dynamics. We specialize in mapping 
+                stochastic flux and particle density within constrained biological topologies.
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
         st.latex(r"\frac{\partial \rho}{\partial t} + \nabla \cdot \mathbf{J} = \sigma")
-        st.info("Current Milestone: Quantifying elongation rates through ribosome run-off CDF analysis.")
+        
+        st.markdown(f"""
+        <div class="status-bar">
+            Current Milestone: Quantifying elongation rates through ribosome run-off CDF analysis.
+        </div>
+        """, unsafe_allow_html=True)
 
     with col_r:
-        st.markdown("""
-        <div class='exec-card' style='text-align: center;'>
-            <h3 style='color: #b59410;'>Model Visualization</h3>
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/TASEP_model.png/640px-TASEP_model.png' width='100%' style='border-radius: 10px; margin-top: 10px;'>
-            <p style='font-size: 0.8rem; margin-top: 10px; color: #9ca3af;'>Particle Exclusion & Hopping Probabilities</p>
+        st.markdown(f"""
+        <div class="content-card">
+            <div class="card-title">Model Visualization</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/TASEP_model.png/640px-TASEP_model.png" width="100%" style="border-radius: 12px; opacity: 0.9;">
+            <p style="color: #64748b; font-size: 0.8rem; margin-top: 15px; text-align: center;">
+                TASEP: Particle Exclusion & Hopping Probabilities
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
 # --- PAGE 2: JOURNAL SUITES ---
 elif page == "Journal Suites":
-    st.markdown("<h1 class='hero-text'>JOURNAL SUITES</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-hero'>Global Academic Monitoring</p>", unsafe_allow_html=True)
+    st.markdown("<h1 class='hero-title'>LITERATURE PORTAL</h1>", unsafe_allow_html=True)
+    
+    def journal_section(title, journals):
+        st.markdown(f"""<div class='content-card'><div class='card-title'>{title}</div>""", unsafe_allow_html=True)
+        cols = st.columns(len(journals))
+        for i, (name, url) in enumerate(journals.items()):
+            cols[i].link_button(name, url, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    def journal_suite(title, links):
-        with st.container():
-            st.markdown(f"<div class='exec-card'><h3 style='color: #b59410;'>{title}</h3>", unsafe_allow_html=True)
-            cols = st.columns(len(links))
-            for i, (name, url) in enumerate(links.items()):
-                cols[i].markdown(f"<a href='{url}' target='_blank' class='journal-btn'>{name}</a>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-    journal_suite("Nature Portfolio", {
+    journal_section("Nature Portfolio", {
         "Nature Physics": "https://www.nature.com/nphys/",
         "Nature Comms": "https://www.nature.com/ncomms/",
         "Comms Biology": "https://www.nature.com/commsbio/"
     })
 
-    journal_suite("Cell Press & Biophysics", {
+    journal_section("Cell Press", {
         "Cell": "https://www.cell.com/cell/home",
         "Molecular Cell": "https://www.cell.com/molecular-cell/home",
         "Biophysical Journal": "https://www.cell.com/biophysj/home"
     })
-
-    journal_suite("Physics Excellence", {
+    
+    journal_section("The Physical Societies", {
         "PRL": "https://journals.aps.org/prl/",
         "PRE": "https://journals.aps.org/pre/",
         "Science": "https://www.science.org/journal/science"
     })
-
-    journal_suite("PNAS & Oxford", {
-        "PNAS": "https://www.pnas.org/",
-        "Nucleic Acid Res": "https://academic.oup.com/nar",
-        "Bioinformatics": "https://academic.oup.com/bioinformatics"
-    })
-
-# --- PAGE 3: PUBLICATIONS ---
-elif page == "Publications":
-    st.markdown("<h1 class='hero-text'>PUBLICATIONS</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-hero'>Intellectual Contributions</p>", unsafe_allow_html=True)
-    
-    papers = [
-        ("Modeling Ribosome Run-off via TASEP Dynamics", "Biophysical Journal (2026)", "#"),
-        ("Phase Transitions in Co-translational Transport", "Physical Review Letters (2025)", "#"),
-        ("Stochastic Flux in Protein Synthesis", "Nature Communications (2024)", "#")
-    ]
-
-    for title, cite, link in papers:
-        st.markdown(f"""
-        <div class='exec-card'>
-            <h4 style='margin: 0;'>{title}</h4>
-            <p style='color: #b59410; margin: 5px 0;'>{cite}</p>
-            <a href='{link}' style='color: #60a5fa; text-decoration: none;'>View DOI Structure →</a>
-        </div>
-        """, unsafe_allow_html=True)
-
-# --- PAGE 4: SCHOLAR TERMINAL ---
-elif page == "Scholar Terminal":
-    st.markdown("<h1 class='hero-text'>SEARCH TERMINAL</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-hero'>Data & Literature Query</p>", unsafe_allow_html=True)
-    
-    st.markdown("<div class='exec-card'>", unsafe_allow_html=True)
-    q = st.text_input("QUERY DATABASE", placeholder="e.g., TASEP KINETICS")
-    if q:
-        st.link_button(f"EXECUTE SEARCH FOR: {q}", f"https://scholar.google.com/scholar?q={q}")
-    st.markdown("</div>", unsafe_allow_html=True)
