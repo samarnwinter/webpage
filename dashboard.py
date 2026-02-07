@@ -75,9 +75,8 @@ if page == "🏠 Home":
         <div style='background: white; padding: 30px; border-radius: 15px; border-left: 6px solid #1a73e8;'>
             <h2 style='color: #1e3d59;'>Stochastic Modeling of Ribosome Dynamics</h2>
             <p style='color: #555; line-height: 1.6;'>
-                My research focuses on the <strong>Totally Asymmetric Simple Exclusion Process (TASEP)</strong> 
-                to quantify translation kinetics. By integrating theoretical physics with large-scale genomic data, 
-                we aim to resolve per-gene elongation rates and the mechanics of co-translational protein sorting.
+                I work in the area of theoritical biophysics, wherein I develop the mathematical and biophysical models to adress the questions related to the biological systems. 
+               
             </p>
         </div>
         """, unsafe_allow_html=True)
