@@ -1,71 +1,65 @@
 import streamlit as st
 import feedparser
-from bs4 import BeautifulSoup # Ensure you added this to requirements.txt
+from bs4 import BeautifulSoup
 
-# --- LOGIC TO CLEAN RSS CONTENT ---
-def clean_text(raw_html):
-    """Removes HTML tags and returns clean text."""
-    if not raw_html:
-        return ""
-    soup = BeautifulSoup(raw_html, "html.parser")
-    return soup.get_text()
+# --- CONFIGURATION ---
+JOURNALS = {
+    "Nature": "https://www.nature.com/nature.rss",
+    "Physical Review Letters": "https://feeds.aps.org/rss/recent/prl.xml",
+    "Biophysical Journal": "https://www.cell.com/biophysj/current.rss",
+    "arXiv: Quantitative Biology": "https://arxiv.org/rss/q-bio"
+}
+KEYWORDS = ["TASEP", "Ribosome", "Translation", "Kinetics"]
 
-# ... (Previous Configuration & CSS) ...
+def clean_text(text):
+    if not text: return ""
+    return BeautifulSoup(text, "html.parser").get_text()
 
-# --- UPDATED JOURNAL DASHBOARD PAGE ---
-elif page == "📡 Literature Surf":
-    st.title("Academic Literature Station")
+st.set_page_config(page_title="Biophysics Research Node", layout="wide")
+
+# --- SIDEBAR ---
+with st.sidebar:
+    st.title("Research Portal")
+    page = st.radio("Navigation", ["Overview", "📡 Literature Surf", "Private Lab Notes"])
+
+# --- PAGE 1: OVERVIEW ---
+if page == "Overview":
+    st.title("Research Framework")
+    st.markdown("### Stochastic Dynamics in Protein Synthesis")
     
-    col_list, col_viewer = st.columns([1, 1.8])
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("**TASEP Modeling**")
+        st.latex(r"J = \rho(1-\rho)")
+    with col2:
+        st.write("**Kinetics**")
+        st.write("Elongation and Sorting Dynamics")
+
+# --- PAGE 2: LITERATURE SURF ---
+elif page == "📡 Literature Surf":
+    st.title("Literature Monitor")
+    
+    col_list, col_viewer = st.columns([1, 2])
     
     with col_list:
-        selected_journal = st.selectbox("Journal Source", list(JOURNALS.keys()))
+        selected_journal = st.selectbox("Source", list(JOURNALS.keys()))
         feed = feedparser.parse(JOURNALS[selected_journal])
         
-        st.write(f"Showing last **{len(feed.entries)}** papers")
-        
-        for entry in feed.entries:
-            # Clean the title of any stray HTML
-            clean_title = clean_text(entry.title)
-            
-            # Identify high-relevance papers
-            is_relevant = any(kw.lower() in clean_title.lower() for kw in KEYWORDS)
-            
-            # Styled Card Selection
-            with st.container():
-                label = f"⭐ {clean_title}" if is_relevant else clean_title
-                if st.button(label, key=entry.link, use_container_width=True):
-                    # Store both link and summary in session state
-                    st.session_state.active_article = {
-                        "title": clean_title,
-                        "link": entry.link,
-                        "summary": entry.get('summary', 'No abstract available.'),
-                        "published": entry.get('published', 'N/A')
-                    }
-                st.write("---")
+        for entry in feed.entries[:10]:
+            # Clean messy HTML from titles
+            ctitle = clean_text(entry.title)
+            if st.button(ctitle, key=entry.link, use_container_width=True):
+                st.session_state.active_url = entry.link
+            st.write("---")
 
     with col_viewer:
-        if 'active_article' in st.session_state:
-            art = st.session_state.active_article
-            
-            # --- THE ARTICLE ABSTRACT PANE ---
-            st.markdown(f"""
-            <div style='background: white; padding: 25px; border-radius: 10px; border: 1px solid #ddd;'>
-                <h2 style='color: #1e3d59;'>{art['title']}</h2>
-                <p style='color: #666;'>Published: {art['published']}</p>
-                <hr>
-                <div style='font-size: 1.1rem; line-height: 1.6; color: #333;'>
-                    <strong>Abstract / Summary:</strong><br>
-                    {clean_text(art['summary'])}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.write("") # Spacer
-            
-            # --- FULL WEBSITE VIEWER ---
-            with st.expander("View Full Journal Interface", expanded=True):
-                st.link_button("Open Article in New Tab", art['link'])
-                st.components.v1.iframe(art['link'], height=800, scrolling=True)
-        else:
-            st.info("Select a title from the list to view the summary and interface.")
+        if 'active_url' in st.session_state:
+            st.link_button("Open in New Tab", st.session_state.active_url)
+            st.components.v1.iframe(st.session_state.active_url, height=800, scrolling=True)
+
+# --- PAGE 3: NOTES ---
+elif page == "Private Lab Notes":
+    st.title("Laboratory Notebook")
+    password = st.text_input("Password", type="password")
+    if password == "physics2026":
+        st.text_area("Entry")
