@@ -41,7 +41,7 @@ with st.sidebar:
 
 # --- PAGE 1: PERSPECTIVE (HOME) ---
 if page == "Perspective":
-    st.markdown("<h1 class='hero-title'>Theoretical Insights</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='hero-title'>Biophysics and Computational Biology</h1>", unsafe_allow_html=True)
     st.markdown("<p class='hero-subtitle'>Non-Equilibrium Systems & Stochastic Dynamics</p>", unsafe_allow_html=True)
     
     col_l, col_r = st.columns([1.6, 1])
