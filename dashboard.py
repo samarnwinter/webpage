@@ -177,13 +177,28 @@ if selected_tab == "Dashboard":
     
     # --- SCHEMATIC FIGURE HEADER ---
     st.markdown("""
-        <div style="width:100%; height:160px; overflow:hidden; border-radius:12px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=2670&auto=format&fit=crop" 
-                 style="width:100%; height:100%; object-fit:cover; opacity: 0.95; filter: contrast(1.1) brightness(0.9);" 
+        <div style="width:100%; height:240px; overflow:hidden; border-radius:12px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2670&auto=format&fit=crop" 
+                 style="width:100%; height:100%; object-fit:cover; opacity: 0.85; filter: contrast(1.2) brightness(0.8);" 
                  alt="Biophysics Schematic">
             <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);"></div>
-            <div style="position:absolute; bottom: 15px; left: 25px; color: white; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; backdrop-filter: blur(4px);">
-                Schematic: Molecular Dynamics & Polymer Physics
+            
+            <!-- OVERLAY EQUATIONS -->
+            <div style="position:absolute; top: 20%; left: 10%; color: rgba(255,255,255,0.8); font-family: 'Times New Roman', serif; font-size: 1.5rem; font-style: italic;">
+                iℏ ∂Ψ/∂t = ĤΨ
+            </div>
+            <div style="position:absolute; bottom: 30%; right: 15%; color: rgba(255,255,255,0.6); font-family: 'Times New Roman', serif; font-size: 1.2rem;">
+                (iγ<sup>μ</sup>∂<sub>μ</sub> - m)ψ = 0
+            </div>
+             <div style="position:absolute; top: 30%; right: 35%; color: rgba(255,255,255,0.5); font-family: 'Times New Roman', serif; font-size: 1.4rem;">
+                ∂ρ/∂t + ∇⋅J = σ
+            </div>
+            <div style="position:absolute; bottom: 20%; left: 30%; color: rgba(255,255,255,0.7); font-family: 'Times New Roman', serif; font-size: 1.3rem;">
+                dP<sub>n</sub>/dt = ∑ (W<sub>nm</sub>P<sub>m</sub> - W<sub>mn</sub>P<sub>n</sub>)
+            </div>
+
+            <div style="position:absolute; bottom: 10px; left: 20px; color: white; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; backdrop-filter: blur(4px);">
+                Schematic: Stochastic Dynamics & Quantum Transport
             </div>
         </div>
     """, unsafe_allow_html=True)
