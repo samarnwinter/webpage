@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 import requests
 import pandas as pd
+import graphviz
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -24,7 +25,7 @@ def get_weather(city="Basel"):
     except:
         return "N/A"
 
-# --- CUSTOM CSS: ACADEMIC MINIMALISM ---
+# --- CUSTOM CSS: ACADEMIC MINIMALISM & SEGREGATION ---
 st.markdown("""
     <style>
     /* TYPOGRAPHY */
@@ -41,29 +42,43 @@ st.markdown("""
 
     /* GLOBAL STYLES */
     .stApp {
-        background-color: #fdfdfd;
+        background-color: #ffffff;
         color: #334155;
     }
     
-    /* SIDEBAR */
+    /* SEGREGATION & ZONES */
+    /* Header Zone: Top Title Area */
+    .header-zone {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 40px;
+        border-radius: 16px;
+        border-bottom: 4px solid #3b82f6;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    /* Main Content Areas */
+    .research-zone {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+
+    .updates-zone {
+        background-color: #f1f5f9; /* Distinct light grey/slate for right sidebar */
+        border-left: 4px solid #94a3b8;
+        border-radius: 8px;
+        padding: 20px;
+        height: 100%;
+    }
+
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: #f8fafc;
         border-right: 1px solid #e2e8f0;
-    }
-
-    /* CARDS */
-    .feature-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        transition: all 0.2s ease;
-    }
-    .feature-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        border-color: #94a3b8;
     }
 
     /* PUBLICATION LIST */
@@ -73,7 +88,7 @@ st.markdown("""
     }
     .pub-year {
         font-weight: 800;
-        color: #cbd5e1;
+        color: #64748b; /* Darker for better visibility */
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
     }
@@ -155,42 +170,84 @@ with st.sidebar:
 
 # --- PAGE 1: HOME (PERSPECTIVE) ---
 if selected_page == "Home":
-    # Hero Section with Title and Landscape Background
-    st.image("https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80", use_column_width=True)
-    
+    # 1. HEADER ZONE (Top)
     st.markdown("""
-    <div style="text-align: center; margin-top: -20px; margin-bottom: 40px;">
-        <h1 style="font-size: 3.5rem; margin-bottom: 10px;">Biophysics & Computational Biology</h1>
-        <p style="font-size: 1.2rem; color: #64748b; letter-spacing: 2px;">NON-EQUILIBRIUM SYSTEMS | STOCHASTIC DYNAMICS | GENE REGULATION</p>
+    <div class="header-zone">
+        <h1 style="margin:0; font-size: 3rem;">Biophysics & Computational Biology</h1>
+        <p style="margin:10px 0 0; color: #475569; font-weight: 600; letter-spacing: 2px;">NON-EQUILIBRIUM SYSTEMS | STOCHASTIC DYNAMICS</p>
     </div>
     """, unsafe_allow_html=True)
+
+    # 2. SCHEMATIC / EQUATION VISUAL (Middle)
+    # Replacing the large image with a scientific schematic and equation
+    c_vis1, c_vis2 = st.columns([1, 1])
     
+    with c_vis1:
+        st.markdown("##### Governing Dynamics")
+        # Displaying a generic Fokker-Planck equation as requested (Math instead of Image)
+        st.latex(r"""
+        \frac{\partial P(x,t)}{\partial t} = -\frac{\partial}{\partial x} \left[ A(x)P(x,t) \right] + \frac{\partial^2}{\partial x^2} \left[ D(x)P(x,t) \right]
+        """)
+        st.caption("Time-evolution of probability density function in stochastic systems.")
+
+    with c_vis2:
+        st.markdown("##### System Schematic")
+        # Using Graphviz for a clean, code-generated schematic figure
+        st.graphviz_chart("""
+            digraph {
+                rankdir=LR;
+                bgcolor="transparent";
+                node [shape=box, style="filled,rounded", fillcolor="#ffffff", color="#cbd5e1", fontname="Inter", fontsize=10];
+                edge [color="#64748b", fontname="Inter", fontsize=8];
+                
+                DNA [label="Chromatin\nConfiguration", fillcolor="#f1f5f9"];
+                RNA [label="mRNA\nTranscription"];
+                Protein [label="Protein\nTranslation", penwidth=2, color="#3b82f6"];
+                
+                DNA -> RNA [label="k_tx"];
+                RNA -> Protein [label="k_tl"];
+                Protein -> Protein [label="Feedback", style=dashed];
+            }
+        """)
+
+    st.markdown("---")
+
+    # 3. SEGREGATED CONTENT (Bottom: Left & Right)
     col1, col2 = st.columns([2, 1])
     
     with col1:
+        # Research Zone - distinct styling
+        st.markdown('<div class="research-zone">', unsafe_allow_html=True)
+        st.markdown("### Research Rationale")
         st.markdown("""
-        <div class="feature-card">
-            <h3>Research Rationale</h3>
-            <p style="line-height: 1.7; color: #475569;">
-                Our work attempts to decipher the stochastic logic governing protein synthesis and gene regulation. 
-                Biological systems operate far from equilibrium, necessitating statistical physics frameworks to understand 
-                their robustness. By refining TASEP models and polymer physics theories, we bridge the gap between 
-                fundamental physical laws and the complex mechanics of ribosome exchange, chromatin conformation, 
-                and translational control under stress.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+        Our work attempts to decipher the stochastic logic governing protein synthesis and gene regulation. 
+        Biological systems operate far from equilibrium, necessitating statistical physics frameworks to understand 
+        their robustness.
         
-        # Highlight Box
+        **Key Questions:**
+        * How does chromatin conformation influence transcriptional bursting?
+        * What are the mechanics of ribosome exchange under stress?
+        * Can we predict gene expression from structural modifications?
+        
+        By bridging fundamental physical laws with complex biological mechanics, we aim to build predictive models
+        for cellular behavior.
+        """)
+        
         st.info("**Current Focus:** Investigating NatA ribosome exchange and translation regulation under stress conditions.")
+        st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
+        # Updates Zone - distinct styling
+        st.markdown('<div class="updates-zone">', unsafe_allow_html=True)
         st.markdown("### Latest Preprints")
         st.markdown("""
-        - **2025** | *Molecular Cell* *HYPK promotes N-terminal protein acetylation*
-        - **2025** | *npj Systems Bio* *Predicting gene expression from chromatin structure*
+        **2025 | Molecular Cell** *HYPK promotes N-terminal protein acetylation*
+        
+        **2025 | npj Systems Bio** *Predicting gene expression from chromatin structure*
         """)
-        st.link_button("View All Publications", "https://scholar.google.com")
+        st.write("")
+        st.link_button("→ Google Scholar", "https://scholar.google.com", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # --- PAGE 2: PUBLICATIONS ---
 elif selected_page == "Publications":
