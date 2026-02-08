@@ -10,7 +10,8 @@ st.set_page_config(
 )
 
 # --- LUXURY DESIGN SYSTEM ---
-# Using raw strings r""" to avoid SyntaxWarnings with escape sequences
+# We use raw strings r""" for all CSS and HTML blocks. 
+# This prevents Python from interpreting backslashes as escape sequences.
 st.markdown(r"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
@@ -18,7 +19,6 @@ st.markdown(r"""
     :root {
         --bg-primary: #F8F9FA;
         --accent-gold: #B89150;
-        --accent-indigo: #4F46E5;
         --text-main: #0F172A;
         --text-muted: #475569;
         --card-bg: #FFFFFF;
@@ -44,13 +44,13 @@ st.markdown(r"""
     .hero-title {
         font-family: 'Instrument Serif', serif;
         font-size: clamp(3rem, 7vw, 5rem);
-        line-height: 1;
+        line-height: 1.1;
         margin-bottom: 1.5rem;
         color: #FFFFFF;
     }
 
     .hero-tagline {
-        font-size: 1rem;
+        font-size: 0.9rem;
         letter-spacing: 0.3em;
         text-transform: uppercase;
         color: var(--accent-gold);
@@ -89,21 +89,15 @@ st.markdown(r"""
     [data-testid="stSidebar"] { background-color: #FFFFFF !important; border-right: 1px solid var(--border-subtle); }
     .sidebar-brand { font-family: 'Instrument Serif', serif; font-size: 2.2rem; padding: 2rem 0; text-align: center; color: var(--text-main); }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
-
-    /* Formatting */
     header, footer { visibility: hidden; }
     </style>
 """, unsafe_allow_html=True)
 
 # --- SIDEBAR & UTILITIES ---
 with st.sidebar:
-    st.markdown("<div class='sidebar-brand'>Inayat</div>", unsafe_allow_html=True)
+    st.markdown(r"<div class='sidebar-brand'>Inayat</div>", unsafe_allow_html=True)
     
-    # Navigation logic with exact matching strings
+    # Navigation logic with exact matching strings for the if/elif blocks below
     page = st.selectbox(
         "NAVIGATION", 
         ["Home: Perspective", "Archive: Repository", "Bibliography: Selected", "Terminal: Workspace"],
@@ -113,8 +107,8 @@ with st.sidebar:
     st.markdown("---")
     
     # High-End Weather Integration
-    st.markdown("### 🌤 Climate Metrics")
-    weather_html = """
+    st.markdown(r"### 🌤 Climate Metrics")
+    weather_html = r"""
     <div style="background: #F8FAFC; padding: 15px; border-radius: 24px; border: 1px solid #E2E8F0;">
     <a class="weatherwidget-io" href="https://forecast7.com/en/40k71n74k01/new-york/" data-label_1="LAB LOCALE" data-label_2="ATMOSPHERICS" data-font="Open Sans" data-icons="Climacons Animated" data-theme="pure" >WEATHER DATA</a>
     <script>
@@ -127,10 +121,10 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Postdoc Researcher | Theoretical Biophysics")
 
-# --- PAGE 1: HOME ---
+# --- MAIN CONTENT LOGIC ---
 if page == "Home: Perspective":
     # Hero Visual Partition
-    st.markdown("""
+    st.markdown(r"""
         <div class="hero-container">
             <div class="hero-tagline">Theoretical Biophysics Node</div>
             <div class="hero-title">Nonequilibrium<br>Statistical Physics</div>
@@ -141,7 +135,7 @@ if page == "Home: Perspective":
     c1, c2 = st.columns([1.8, 1], gap="large")
 
     with c1:
-        st.markdown("""
+        st.markdown(r"""
             <div class="bento-card">
                 <span class="card-label">Research Rationale</span>
                 <h2 style="margin-top:0; font-family: 'Instrument Serif', serif; font-size: 2.5rem;">Rationalizing Biological Complexity</h2>
@@ -161,7 +155,7 @@ if page == "Home: Perspective":
         """, unsafe_allow_html=True)
 
     with c2:
-        st.markdown("""
+        st.markdown(r"""
             <div class="bento-card" style="background: #0F172A; color: white;">
                 <span class="card-label" style="color: var(--accent-gold);">Operational Focus</span>
                 <h3 style="margin-top:0; color: white;">Molecular Architecture</h3>
@@ -175,19 +169,19 @@ if page == "Home: Perspective":
             </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(r"<br>", unsafe_allow_html=True)
 
     # Sub Grid
     g1, g2, g3 = st.columns(3, gap="medium")
     with g1:
-        st.markdown("""<div class="bento-card">
+        st.markdown(r"""<div class="bento-card">
             <span class="card-label">Foundational Equation</span>
             <div style="padding: 1rem 0; text-align: center;">""", unsafe_allow_html=True)
         st.latex(r"\frac{\partial P}{\partial t} = \mathbb{W} P")
-        st.markdown("""<small style="color: var(--text-muted);">Probability evolution in discrete state-space.</small></div>""", unsafe_allow_html=True)
+        st.markdown(r"""<small style="color: var(--text-muted);">Probability evolution in discrete state-space.</small></div>""", unsafe_allow_html=True)
     
     with g2:
-        st.markdown("""<div class="bento-card">
+        st.markdown(r"""<div class="bento-card">
             <span class="card-label">Node Status</span>
             <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
                 <div style="width: 10px; height: 10px; background: #10B981; border-radius: 50%; margin-right: 10px;"></div>
@@ -200,25 +194,24 @@ if page == "Home: Perspective":
         </div>""", unsafe_allow_html=True)
         
     with g3:
-        st.markdown("""<div class="bento-card">
+        st.markdown(r"""<div class="bento-card">
             <span class="card-label">Academic Identity</span>
             <div style="display: grid; gap: 10px;">
-                <a href="#" style="text-decoration:none; color: var(--text-main); font-weight:600;">ORCID: 0000-000X...</a>
+                <a href="#" style="text-decoration:none; color: var(--text-main); font-weight:600;">ORCID: Registered</a>
                 <a href="#" style="text-decoration:none; color: var(--text-main); font-weight:600;">ResearchGate Profile</a>
             </div>
         </div>""", unsafe_allow_html=True)
 
-# --- PAGE 2: REPOSITORY ---
 elif page == "Archive: Repository":
-    st.markdown("<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Repository Archive</h1>", unsafe_allow_html=True)
+    st.markdown(r"<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Repository Archive</h1>", unsafe_allow_html=True)
     
     def journal_section(title, journals):
-        st.markdown(f"""<div style='background: white; border-radius: 32px; padding: 2.5rem; border: 1px solid var(--border-subtle); margin-bottom: 2rem;'>
+        st.markdown(fr"""<div style='background: white; border-radius: 32px; padding: 2.5rem; border: 1px solid var(--border-subtle); margin-bottom: 2rem;'>
             <h3 style='font-family: Instrument Serif, serif; color: var(--text-main); margin-bottom: 2rem;'>{title}</h3>""", unsafe_allow_html=True)
         cols = st.columns(4)
         for i, (name, url) in enumerate(journals.items()):
             cols[i%4].link_button(name, url, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown(r"</div>", unsafe_allow_html=True)
 
     journal_section("Nature & Science Portfolios", {
         "Nature": "https://nature.com", "Nature Physics": "https://nature.com/nphys",
@@ -237,9 +230,8 @@ elif page == "Archive: Repository":
         "arXiv: q-bio": "https://arxiv.org", "bioRxiv": "https://biorxiv.org"
     })
 
-# --- PAGE 3: BIBLIOGRAPHY ---
 elif page == "Bibliography: Selected":
-    st.markdown("<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Curated Bibliography</h1>", unsafe_allow_html=True)
+    st.markdown(r"<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Curated Bibliography</h1>", unsafe_allow_html=True)
     
     publications = [
         {"y": "2025", "t": "HYPK promotes N-terminal protein acetylation through rapid ribosome exchange of NatA", "j": "Molecular Cell 85 (24)"},
@@ -248,7 +240,7 @@ elif page == "Bibliography: Selected":
     ]
 
     for p in publications:
-        st.markdown(f"""
+        st.markdown(rf"""
             <div style="background: white; padding: 2.5rem; border-radius: 32px; margin-bottom: 1.5rem; border: 1px solid var(--border-subtle);">
                 <span style="color: var(--accent-gold); font-weight: 800; font-size: 0.8rem; letter-spacing: 0.1em;">{p['y']}</span>
                 <h3 style="margin: 0.5rem 0; font-weight: 700; color: var(--text-main);">{p['t']}</h3>
@@ -256,25 +248,24 @@ elif page == "Bibliography: Selected":
             </div>
         """, unsafe_allow_html=True)
 
-# --- PAGE 4: TERMINAL ---
 elif page == "Terminal: Workspace":
-    st.markdown("<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Discovery Terminal</h1>", unsafe_allow_html=True)
+    st.markdown(r"<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Discovery Terminal</h1>", unsafe_allow_html=True)
     
-    st.markdown("""<div class="bento-card">
+    st.markdown(r"""<div class="bento-card">
         <span class="card-label">Unified Query Matrix</span>
         <h3>Distributed Repository Search</h3>
         <p style="color: var(--text-muted);">Access open-source datasets and pre-print servers globally.</p>
     </div>""", unsafe_allow_html=True)
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(r"<br>", unsafe_allow_html=True)
     query = st.text_input("ENTER SEARCH PARAMETERS", placeholder="e.g. 'Stochastic translation initiation'")
     
     if query:
         st.link_button(f"Initiate Search for: {query}", f"https://scholar.google.com/scholar?q={query}")
 
 # --- GLOBAL FOOTER ---
-st.markdown("""
+st.markdown(r"""
     <div style="text-align: center; padding: 5rem 0; color: #94A3B8; font-size: 0.75rem; letter-spacing: 0.05em;">
-        &copy; 2026 INAYAT NODE | THEORETICAL BIOPHYSICS | OPERATIONAL DEPLOYMENT V.3.1
+        &copy; 2026 INAYAT NODE | THEORETICAL BIOPHYSICS | OPERATIONAL DEPLOYMENT V.3.2
     </div>
 """, unsafe_allow_html=True)
