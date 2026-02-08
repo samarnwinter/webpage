@@ -1,271 +1,328 @@
 import streamlit as st
 import datetime
+import requests
+import pandas as pd
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
-    page_title="Inayat | Research Node",
+    page_title="Inayat | Theoretical Biophysics",
     page_icon="🧬",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="expanded"
 )
 
-# --- LUXURY DESIGN SYSTEM ---
-# We use raw strings r""" for all CSS and HTML blocks. 
-# This prevents Python from interpreting backslashes as escape sequences.
-st.markdown(r"""
+# --- UTILITY FUNCTIONS ---
+def get_weather(city="Basel"):
+    """Fetches simple current weather from OpenMeteo (No API Key needed)"""
+    try:
+        # Coordinates for Basel, Switzerland
+        url = "https://api.open-meteo.com/v1/forecast?latitude=47.5584&longitude=7.5733&current_weather=true"
+        response = requests.get(url).json()
+        temp = response['current_weather']['temperature']
+        code = response['current_weather']['weathercode']
+        return f"{temp}°C"
+    except:
+        return "N/A"
+
+# --- CUSTOM CSS: ACADEMIC MINIMALISM ---
+st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
-
-    :root {
-        --bg-primary: #F8F9FA;
-        --accent-gold: #B89150;
-        --text-main: #0F172A;
-        --text-muted: #475569;
-        --card-bg: #FFFFFF;
-        --border-subtle: #EDF2F7;
-    }
-
-    .stApp { background-color: var(--bg-primary); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; }
+    /* TYPOGRAPHY */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
     
-    /* Hero Section */
-    .hero-container {
-        padding: 6rem 3rem;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%),
-                    url('https://images.unsplash.com/photo-1501166617713-78894c7482d9?q=80&w=2070&auto=format&fit=crop');
-        background-size: cover;
-        background-position: center;
-        border-radius: 40px;
-        margin-bottom: 2.5rem;
-        color: white;
-        text-align: left;
-        border: 1px solid rgba(255,255,255,0.1);
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
     }
 
-    .hero-title {
-        font-family: 'Instrument Serif', serif;
-        font-size: clamp(3rem, 7vw, 5rem);
-        line-height: 1.1;
-        margin-bottom: 1.5rem;
-        color: #FFFFFF;
+    h1, h2, h3 {
+        font-family: 'Playfair Display', serif; 
+        color: #0f172a;
     }
 
-    .hero-tagline {
+    /* GLOBAL STYLES */
+    .stApp {
+        background-color: #fdfdfd;
+        color: #334155;
+    }
+    
+    /* SIDEBAR */
+    [data-testid="stSidebar"] {
+        background-color: #f8fafc;
+        border-right: 1px solid #e2e8f0;
+    }
+
+    /* CARDS */
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        border-color: #94a3b8;
+    }
+
+    /* PUBLICATION LIST */
+    .pub-entry {
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .pub-year {
+        font-weight: 800;
+        color: #cbd5e1;
         font-size: 0.9rem;
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-        color: var(--accent-gold);
+        margin-bottom: 0.5rem;
+    }
+    .pub-title {
+        font-size: 1.15rem;
         font-weight: 600;
-        margin-bottom: 1rem;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+    .pub-journal {
+        font-style: italic;
+        color: #64748b;
+        font-family: 'Playfair Display', serif;
     }
 
-    /* Bento Grid Elements */
-    .bento-card {
-        background: var(--card-bg);
-        padding: 2.5rem;
-        border-radius: 32px;
-        border: 1px solid var(--border-subtle);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        height: 100%;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* TAB STYLING */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 24px;
     }
-
-    .bento-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-        border-color: var(--accent-gold);
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        white-space: pre-wrap;
+        border-radius: 4px 4px 0px 0px;
+        gap: 1px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-weight: 600;
+        color: #64748b;
     }
-
-    .card-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: var(--accent-gold);
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        margin-bottom: 1.2rem;
-        display: block;
+    .stTabs [aria-selected="true"] {
+        background-color: #ffffff;
+        color: #0f172a;
+        border-bottom: 2px solid #0f172a;
     }
-
-    /* Sidebar Navigation */
-    [data-testid="stSidebar"] { background-color: #FFFFFF !important; border-right: 1px solid var(--border-subtle); }
-    .sidebar-brand { font-family: 'Instrument Serif', serif; font-size: 2.2rem; padding: 2rem 0; text-align: center; color: var(--text-main); }
-
-    header, footer { visibility: hidden; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- SIDEBAR & UTILITIES ---
+# --- SIDEBAR: DASHBOARD CONTROLS ---
 with st.sidebar:
-    st.markdown(r"<div class='sidebar-brand'>Inayat</div>", unsafe_allow_html=True)
+    st.markdown("### INAYAT NODE")
+    st.caption("Theoretical Biophysics | Postdoc")
     
-    # Navigation logic with exact matching strings for the if/elif blocks below
-    page = st.selectbox(
-        "NAVIGATION", 
-        ["Home: Perspective", "Archive: Repository", "Bibliography: Selected", "Terminal: Workspace"],
-        index=0
+    # Navigation
+    selected_page = st.radio(
+        "Navigate", 
+        ["Home", "Publications", "Journals & Libraries", "Science Feed", "Planner"],
+        label_visibility="collapsed"
     )
     
     st.markdown("---")
     
-    # High-End Weather Integration
-    st.markdown(r"### 🌤 Climate Metrics")
-    weather_html = r"""
-    <div style="background: #F8FAFC; padding: 15px; border-radius: 24px; border: 1px solid #E2E8F0;">
-    <a class="weatherwidget-io" href="https://forecast7.com/en/40k71n74k01/new-york/" data-label_1="LAB LOCALE" data-label_2="ATMOSPHERICS" data-font="Open Sans" data-icons="Climacons Animated" data-theme="pure" >WEATHER DATA</a>
-    <script>
-    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-    </script>
-    </div>
-    """
-    st.components.v1.html(weather_html, height=140)
-    
+    # Widget 1: Live Weather (Basel)
+    col_w1, col_w2 = st.columns([1, 3])
+    with col_w1:
+        st.write("☁️")
+    with col_w2:
+        st.write(f"**Basel:** {get_weather()}")
+        st.caption(datetime.datetime.now().strftime("%A, %d %B"))
+
     st.markdown("---")
-    st.caption("Postdoc Researcher | Theoretical Biophysics")
-
-# --- MAIN CONTENT LOGIC ---
-if page == "Home: Perspective":
-    # Hero Visual Partition
-    st.markdown(r"""
-        <div class="hero-container">
-            <div class="hero-tagline">Theoretical Biophysics Node</div>
-            <div class="hero-title">Nonequilibrium<br>Statistical Physics</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Main Bento Grid
-    c1, c2 = st.columns([1.8, 1], gap="large")
-
-    with c1:
-        st.markdown(r"""
-            <div class="bento-card">
-                <span class="card-label">Research Rationale</span>
-                <h2 style="margin-top:0; font-family: 'Instrument Serif', serif; font-size: 2.5rem;">Rationalizing Biological Complexity</h2>
-                <p style="color: var(--text-muted); line-height: 1.8; font-size: 1.1rem;">
-                    Biological systems are fundamentally dissipative structures maintained far from thermal equilibrium. 
-                    Our methodology involves treating intracellular processes—such as translation and chromatin dynamics—as 
-                    stochastic trajectories through a complex state-space. By deriving analytical solutions to Master Equations 
-                    and utilizing stochastic modeling, we aim to transform qualitative observations of cellular regulation 
-                    into a predictive physical framework.
-                </p>
-                <p style="color: var(--text-muted); line-height: 1.8; font-size: 1.1rem;">
-                    The rationale behind this approach is that the seemingly chaotic nature of protein synthesis is actually 
-                    governed by rigorous energetic and kinetic constraints. Understanding these constraints allows us to 
-                    decode how cells maintain robustness in fluctuating environments.
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with c2:
-        st.markdown(r"""
-            <div class="bento-card" style="background: #0F172A; color: white;">
-                <span class="card-label" style="color: var(--accent-gold);">Operational Focus</span>
-                <h3 style="margin-top:0; color: white;">Molecular Architecture</h3>
-                <p style="font-size: 0.95rem; color: #94A3B8; line-height: 1.6;">
-                    Currently investigating the kinetic barriers of ribosome exchange within the NatA complex. 
-                    Analyzing how proteotoxic stress alters the landscape of N-terminal acetylation.
-                </p>
-                <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 16px;">
-                    <code style="color: var(--accent-gold);">Branch: main/manuscript-v2</code>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown(r"<br>", unsafe_allow_html=True)
-
-    # Sub Grid
-    g1, g2, g3 = st.columns(3, gap="medium")
-    with g1:
-        st.markdown(r"""<div class="bento-card">
-            <span class="card-label">Foundational Equation</span>
-            <div style="padding: 1rem 0; text-align: center;">""", unsafe_allow_html=True)
-        st.latex(r"\frac{\partial P}{\partial t} = \mathbb{W} P")
-        st.markdown(r"""<small style="color: var(--text-muted);">Probability evolution in discrete state-space.</small></div>""", unsafe_allow_html=True)
     
-    with g2:
-        st.markdown(r"""<div class="bento-card">
-            <span class="card-label">Node Status</span>
-            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                <div style="width: 10px; height: 10px; background: #10B981; border-radius: 50%; margin-right: 10px;"></div>
-                <span>Computational Cluster Active</span>
-            </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 10px; height: 10px; background: var(--accent-gold); border-radius: 50%; margin-right: 10px;"></div>
-                <span>Data Synthesis Pending</span>
-            </div>
-        </div>""", unsafe_allow_html=True)
-        
-    with g3:
-        st.markdown(r"""<div class="bento-card">
-            <span class="card-label">Academic Identity</span>
-            <div style="display: grid; gap: 10px;">
-                <a href="#" style="text-decoration:none; color: var(--text-main); font-weight:600;">ORCID: Registered</a>
-                <a href="#" style="text-decoration:none; color: var(--text-main); font-weight:600;">ResearchGate Profile</a>
-            </div>
-        </div>""", unsafe_allow_html=True)
-
-elif page == "Archive: Repository":
-    st.markdown(r"<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Repository Archive</h1>", unsafe_allow_html=True)
+    # Widget 2: Quick Lab Reminders
+    st.markdown("**Lab Reminders**")
+    if 'reminders' not in st.session_state:
+        st.session_state.reminders = ["Submit grant draft", "Review student paper"]
     
-    def journal_section(title, journals):
-        st.markdown(fr"""<div style='background: white; border-radius: 32px; padding: 2.5rem; border: 1px solid var(--border-subtle); margin-bottom: 2rem;'>
-            <h3 style='font-family: Instrument Serif, serif; color: var(--text-main); margin-bottom: 2rem;'>{title}</h3>""", unsafe_allow_html=True)
-        cols = st.columns(4)
-        for i, (name, url) in enumerate(journals.items()):
-            cols[i%4].link_button(name, url, use_container_width=True)
-        st.markdown(r"</div>", unsafe_allow_html=True)
-
-    journal_section("Nature & Science Portfolios", {
-        "Nature": "https://nature.com", "Nature Physics": "https://nature.com/nphys",
-        "Nature Comms": "https://nature.com/ncomms", "Science": "https://science.org",
-        "Science Adv": "https://science.org/sciadv", "Scientific Reports": "https://nature.com/srep"
-    })
-
-    journal_section("Cell Press & Biophysics", {
-        "Cell": "https://cell.com", "Molecular Cell": "https://cell.com/molecular-cell",
-        "Biophysical Journal": "https://cell.com/biophysj", "Structure": "https://cell.com/structure",
-        "Cell Reports": "https://cell.com/cell-reports"
-    })
-
-    journal_section("Meta-Intelligence Search", {
-        "Google Scholar": "https://scholar.google.com", "PubMed Central": "https://pubmed.ncbi.nlm.nih.gov",
-        "arXiv: q-bio": "https://arxiv.org", "bioRxiv": "https://biorxiv.org"
-    })
-
-elif page == "Bibliography: Selected":
-    st.markdown(r"<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Curated Bibliography</h1>", unsafe_allow_html=True)
+    new_reminder = st.text_input("Add task", placeholder="Type & Enter", label_visibility="collapsed")
+    if new_reminder:
+        st.session_state.reminders.append(new_reminder)
     
-    publications = [
-        {"y": "2025", "t": "HYPK promotes N-terminal protein acetylation through rapid ribosome exchange of NatA", "j": "Molecular Cell 85 (24)"},
-        {"y": "2024", "t": "Understanding the regulation of protein synthesis under stress conditions", "j": "Biophysical Journal 123 (20)"},
-        {"y": "2023", "t": "Decoding stoichiometric protein synthesis through translation rate parameters", "j": "Biophysical Reports 3 (4)"}
-    ]
+    # Display list with delete capability
+    for i, task in enumerate(st.session_state.reminders):
+        c1, c2 = st.columns([0.1, 0.9])
+        if c1.button("x", key=f"del_{i}", help="Remove"):
+            st.session_state.reminders.pop(i)
+            st.rerun()
+        c2.write(f"• {task}")
 
-    for p in publications:
-        st.markdown(rf"""
-            <div style="background: white; padding: 2.5rem; border-radius: 32px; margin-bottom: 1.5rem; border: 1px solid var(--border-subtle);">
-                <span style="color: var(--accent-gold); font-weight: 800; font-size: 0.8rem; letter-spacing: 0.1em;">{p['y']}</span>
-                <h3 style="margin: 0.5rem 0; font-weight: 700; color: var(--text-main);">{p['t']}</h3>
-                <p style="color: var(--text-muted); margin:0;">Archived in <span style="font-weight: 600; color: var(--text-main);">{p['j']}</span></p>
-            </div>
-        """, unsafe_allow_html=True)
-
-elif page == "Terminal: Workspace":
-    st.markdown(r"<h1 style='font-family: Instrument Serif, serif; font-size: 3.5rem;'>Discovery Terminal</h1>", unsafe_allow_html=True)
+# --- PAGE 1: HOME (PERSPECTIVE) ---
+if selected_page == "Home":
+    # Hero Section with Title and Landscape Background
+    st.image("https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80", use_column_width=True)
     
-    st.markdown(r"""<div class="bento-card">
-        <span class="card-label">Unified Query Matrix</span>
-        <h3>Distributed Repository Search</h3>
-        <p style="color: var(--text-muted);">Access open-source datasets and pre-print servers globally.</p>
-    </div>""", unsafe_allow_html=True)
-    
-    st.markdown(r"<br>", unsafe_allow_html=True)
-    query = st.text_input("ENTER SEARCH PARAMETERS", placeholder="e.g. 'Stochastic translation initiation'")
-    
-    if query:
-        st.link_button(f"Initiate Search for: {query}", f"https://scholar.google.com/scholar?q={query}")
-
-# --- GLOBAL FOOTER ---
-st.markdown(r"""
-    <div style="text-align: center; padding: 5rem 0; color: #94A3B8; font-size: 0.75rem; letter-spacing: 0.05em;">
-        &copy; 2026 INAYAT NODE | THEORETICAL BIOPHYSICS | OPERATIONAL DEPLOYMENT V.3.2
+    st.markdown("""
+    <div style="text-align: center; margin-top: -20px; margin-bottom: 40px;">
+        <h1 style="font-size: 3.5rem; margin-bottom: 10px;">Biophysics & Computational Biology</h1>
+        <p style="font-size: 1.2rem; color: #64748b; letter-spacing: 2px;">NON-EQUILIBRIUM SYSTEMS | STOCHASTIC DYNAMICS | GENE REGULATION</p>
     </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        st.markdown("""
+        <div class="feature-card">
+            <h3>Research Rationale</h3>
+            <p style="line-height: 1.7; color: #475569;">
+                Our work attempts to decipher the stochastic logic governing protein synthesis and gene regulation. 
+                Biological systems operate far from equilibrium, necessitating statistical physics frameworks to understand 
+                their robustness. By refining TASEP models and polymer physics theories, we bridge the gap between 
+                fundamental physical laws and the complex mechanics of ribosome exchange, chromatin conformation, 
+                and translational control under stress.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Highlight Box
+        st.info("**Current Focus:** Investigating NatA ribosome exchange and translation regulation under stress conditions.")
+
+    with col2:
+        st.markdown("### Latest Preprints")
+        st.markdown("""
+        - **2025** | *Molecular Cell* *HYPK promotes N-terminal protein acetylation*
+        - **2025** | *npj Systems Bio* *Predicting gene expression from chromatin structure*
+        """)
+        st.link_button("View All Publications", "https://scholar.google.com")
+
+# --- PAGE 2: PUBLICATIONS ---
+elif selected_page == "Publications":
+    st.title("Selected Works")
+    st.markdown("A curation of peer-reviewed articles and conference proceedings.")
+    
+    # Helper to render clean publication entries
+    def render_pub(year, title, authors, journal, link="#"):
+        st.markdown(f"""
+        <div class="pub-entry">
+            <div class="pub-year">{year}</div>
+            <a href="{link}" style="text-decoration: none;"><div class="pub-title">{title}</div></a>
+            <div style="color: #475569; font-size: 0.95rem;">{authors}</div>
+            <div class="pub-journal">{journal}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    tab1, tab2 = st.tabs(["Journal Articles", "Conference Proceedings"])
+    
+    with tab1:
+        render_pub("2025", "HYPK promotes N-terminal protein acetylation through rapid ribosome exchange of NatA", 
+                   "AM Lentzsch, Z Fan, IU Irshad, et al.", "Molecular Cell 85 (24), 4562-4574")
+        render_pub("2025", "Predicting gene expression changes from chromatin structure modification", 
+                   "S Senapati, IU Irshad, AK Sharma, H Kumar", "npj Systems Biology and Applications 11 (1), 34")
+        render_pub("2024", "Understanding the regulation of protein synthesis under stress conditions", 
+                   "IU Irshad, AK Sharma", "Biophysical Journal 123 (20), 3627-3639")
+        render_pub("2023", "Decoding stoichiometric protein synthesis in E. coli through translation rate parameters", 
+                   "IU Irshad, AK Sharma", "Biophysical Reports 3 (4)")
+        render_pub("2023", "Fundamental insights into the correlation between chromosome configuration and transcription", 
+                   "S Senapati, IU Irshad, et al.", "Physical Biology 20 (5)")
+    
+    with tab2:
+        render_pub("2025", "Understanding the regulation of protein synthesis in stress conditions", 
+                   "IU Irshad", "Biophysical Journal 124 (3), 145a-146a")
+
+# --- PAGE 3: JOURNALS & LIBRARIES ---
+elif selected_page == "Journals & Libraries":
+    st.title("Digital Library")
+    
+    # -- Search Engines --
+    st.markdown("### Database Search")
+    c1, c2 = st.columns(2)
+    with c1:
+        scholar_q = st.text_input("Google Scholar", placeholder="Search keywords...")
+        if scholar_q:
+            st.link_button("Search Scholar", f"https://scholar.google.com/scholar?q={scholar_q}")
+    with c2:
+        pubmed_q = st.text_input("PubMed", placeholder="Search biomedical literature...")
+        if pubmed_q:
+            st.link_button("Search PubMed", f"https://pubmed.ncbi.nlm.nih.gov/?term={pubmed_q}")
+
+    st.write("---")
+    
+    # -- Segregated Journals --
+    st.markdown("### Journal Racks")
+    
+    # Define journal dictionary structure
+    journal_groups = {
+        "Nature Portfolio": {
+            "Nature": "https://www.nature.com/",
+            "Nature Physics": "https://www.nature.com/nphys/",
+            "Nature Methods": "https://www.nature.com/nmeth/",
+            "Nature Comms": "https://www.nature.com/ncomms/",
+            "Sci Reports": "https://www.nature.com/srep/"
+        },
+        "Science Family": {
+            "Science": "https://www.science.org/",
+            "Science Advances": "https://www.science.org/journal/sciadv",
+            "Science Robotics": "https://www.science.org/journal/scirobotics"
+        },
+        "Cell Press": {
+            "Cell": "https://www.cell.com/cell/home",
+            "Molecular Cell": "https://www.cell.com/molecular-cell/home",
+            "Biophysical Journal": "https://www.cell.com/biophysj/home",
+            "Structure": "https://www.cell.com/structure/home"
+        },
+        "Physics (APS/IOP)": {
+            "Phys. Rev. Lett.": "https://journals.aps.org/prl/",
+            "Phys. Rev. E": "https://journals.aps.org/pre/",
+            "Physical Biology": "https://iopscience.iop.org/journal/1478-3975",
+            "Rev. Mod. Phys.": "https://journals.aps.org/rmp/"
+        }
+    }
+    
+    # Create tabs for each publisher group
+    tabs = st.tabs(list(journal_groups.keys()))
+    
+    for tab, (group_name, journals) in zip(tabs, journal_groups.items()):
+        with tab:
+            cols = st.columns(4)
+            for i, (name, url) in enumerate(journals.items()):
+                with cols[i % 4]:
+                    st.link_button(name, url, use_container_width=True)
+
+# --- PAGE 4: SCIENCE FEED ---
+elif selected_page == "Science Feed":
+    st.title("Latest Updates in Science")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        st.markdown("### Curated Feeds")
+        # Simulating a feed layout
+        feed_items = [
+            {"source": "Nature News", "title": "New insights into ribosome heterogeneity", "date": "Today"},
+            {"source": "Science Daily", "title": "Physics of chromatin folding revealed by cryo-EM", "date": "Yesterday"},
+            {"source": "Phys.org", "title": "Stochastic processes in biological cells: A review", "date": "2 Days ago"},
+        ]
+        
+        for item in feed_items:
+            st.markdown(f"""
+            <div style="padding: 15px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 0.8rem; color: #3b82f6; font-weight: bold; text-transform: uppercase;">{item['source']} • {item['date']}</div>
+                <div style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">{item['title']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+    with col2:
+        st.markdown("### Quick Access")
+        st.link_button("bioRxiv (Biophysics)", "https://www.biorxiv.org/collection/biophysics", use_container_width=True)
+        st.link_button("arXiv (Quant Bio)", "https://arxiv.org/list/q-bio/new", use_container_width=True)
+
+# --- PAGE 5: PLANNER (Google Calendar) ---
+elif selected_page == "Planner":
+    st.title("Schedule & Planning")
+    st.markdown("Integrate your lab schedule or conference timeline here.")
+    
+    # Calendar Embed
+    # NOTE: Replace 'src=' URL with your specific Google Calendar Embed URL for this to show YOUR events.
+    # Go to Google Calendar -> Settings -> Integrate Calendar -> Embed Code
+    st.components.v1.iframe(
+        src="https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=Europe%2FZurich",
+        height=600,
+        scrolling=True
+    )
