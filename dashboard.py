@@ -174,6 +174,20 @@ with st.sidebar:
 
 # --- TAB 1: DASHBOARD (HOME) ---
 if selected_tab == "Dashboard":
+    
+    # --- SCHEMATIC FIGURE HEADER ---
+    st.markdown("""
+        <div style="width:100%; height:160px; overflow:hidden; border-radius:12px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=2670&auto=format&fit=crop" 
+                 style="width:100%; height:100%; object-fit:cover; opacity: 0.95; filter: contrast(1.1) brightness(0.9);" 
+                 alt="Biophysics Schematic">
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);"></div>
+            <div style="position:absolute; bottom: 15px; left: 25px; color: white; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; backdrop-filter: blur(4px);">
+                Schematic: Molecular Dynamics & Polymer Physics
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
     # Header Section
     col_hero, col_widgets = st.columns([2, 1])
     
