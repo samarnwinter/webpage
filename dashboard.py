@@ -12,7 +12,7 @@ st.set_page_config(
 # --- LUXURY DESIGN SYSTEM ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Bormioli:ital,wght@0,400;1,700&family=Inter:wght@300;400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Inter:wght@300;400;600;800&display=swap');
 
     :root {
         --bg-primary: #FAFAFA;
@@ -87,27 +87,58 @@ st.markdown("""
         display: block;
     }
 
-    /* Navigation Customization */
-    [data-testid="stSidebar"] { background-color: #FFFFFF !important; border-right: 1px solid #EEE; }
-    .sidebar-title { font-weight: 800; font-size: 1.5rem; padding: 2rem 0; color: var(--text-deep); }
+    /* Sidebar and Navigation */
+    [data-testid="stSidebar"] { 
+        background-color: #FFFFFF !important; 
+        border-right: 1px solid #EEE; 
+    }
+    
+    /* Custom Sidebar Title */
+    .sidebar-title { 
+        font-family: 'Inter', sans-serif;
+        font-weight: 800; 
+        font-size: 1.5rem; 
+        padding: 1.5rem 0; 
+        color: var(--text-deep); 
+        text-align: center;
+    }
 
-    /* Hide Defaults */
+    /* Hide Streamlit Branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    
+    /* Publication Styling */
+    .pub-box {
+        background: white; 
+        padding: 2.5rem; 
+        border-radius: 28px; 
+        margin-bottom: 1.5rem; 
+        border: 1px solid #F1F1F1; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        transition: border-color 0.3s ease;
+    }
+    .pub-box:hover {
+        border-color: var(--accent-gold);
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # --- SIDEBAR & UTILITIES ---
 with st.sidebar:
     st.markdown("<div class='sidebar-title'>INAYAT NODE</div>", unsafe_allow_html=True)
-    page = st.selectbox("WORKSPACE", ["Home: Identity", "Archive: Literature", "Selected Works", "Terminal: Tools"])
+    
+    # Navigation Tabs via selectbox
+    page = st.selectbox(
+        "WORKSPACE NAVIGATION", 
+        ["Home: Identity", "Archive: Literature", "Selected Works", "Terminal: Tools"],
+        index=0
+    )
     
     st.markdown("---")
     
     # Premium Weather Widget
     st.markdown("### 🌤 Environmental Data")
-    # Clean transparent weather widget
     weather_code = """
     <div style="background: white; padding: 15px; border-radius: 20px; border: 1px solid #EEE;">
     <a class="weatherwidget-io" href="https://forecast7.com/en/40k71n74k01/new-york/" data-label_1="LAB LOCALE" data-label_2="METRICS" data-font="Roboto" data-icons="Climacons Animated" data-theme="pure" >METEOROLOGICAL DATA</a>
@@ -195,13 +226,12 @@ elif page == "Archive: Literature":
     st.markdown("<p style='color: var(--text-slate); margin-bottom: 3rem;'>Segregated intelligence from top-tier scientific publishers.</p>", unsafe_allow_html=True)
 
     def journal_box(title, items):
-        with st.container():
-            st.markdown(f"""<div style='background: white; border-radius: 24px; padding: 2rem; border: 1px solid #EEE; margin-bottom: 2rem;'>
-                <h4 style='color: var(--accent-gold); margin-bottom: 1.5rem;'>{title}</h4>""", unsafe_allow_html=True)
-            cols = st.columns(4)
-            for i, (name, url) in enumerate(items.items()):
-                cols[i%4].link_button(name, url, use_container_width=True)
-            st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown(f"""<div style='background: white; border-radius: 24px; padding: 2rem; border: 1px solid #EEE; margin-bottom: 2rem;'>
+            <h4 style='color: var(--accent-gold); margin-bottom: 1.5rem;'>{title}</h4>""", unsafe_allow_html=True)
+        cols = st.columns(4)
+        for i, (name, url) in enumerate(items.items()):
+            cols[i%4].link_button(name, url, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     journal_box("Nature & Science Portfolios", {
         "Nature": "https://nature.com", "Nature Physics": "https://nature.com/nphys",
@@ -231,7 +261,7 @@ elif page == "Selected Works":
 
     for p in publications:
         st.markdown(f"""
-            <div style="background: white; padding: 2.5rem; border-radius: 28px; margin-bottom: 1.5rem; border: 1px solid #F1F1F1; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+            <div class="pub-box">
                 <span style="color: var(--accent-gold); font-weight: 800; font-size: 0.8rem;">{p['y']}</span>
                 <h3 style="margin: 0.5rem 0; font-weight: 700;">{p['t']}</h3>
                 <p style="color: var(--text-slate); margin:0;">Published in <span style="font-weight: 600;">{p['j']}</span></p>
