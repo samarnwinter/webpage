@@ -26,9 +26,9 @@ style.codon_strip()
 
 # ---- protein synthesis explainer ----------------------------------------- #
 st.markdown("## Protein synthesis, quantitatively")
-st.markdown(f"<p style='max-width:74ch;font-size:1.06rem'>{SCIENCE['intro']}</p>",
+st.markdown(f"<p style='text-align:justify;font-size:1.06rem'>{SCIENCE['intro']}</p>",
             unsafe_allow_html=True)
-st.markdown(f"<p style='max-width:74ch'>{SCIENCE['bridge']}</p>",
+st.markdown(f"<p style='text-align:justify'>{SCIENCE['bridge']}</p>",
             unsafe_allow_html=True)
 
 c1, c2 = st.columns(2)
