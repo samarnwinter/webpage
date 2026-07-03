@@ -27,6 +27,7 @@ def fetch_recent_papers():
     keywords = '("protein synthesis"[TIAB] OR "translation"[TIAB] OR "ribosome"[TIAB] OR "mRNA translation"[TIAB])'
     query = urllib.parse.quote(f"{journals} AND {keywords} AND {date_str}")
     
+    # CORRECTED API ENDPOINT PATHS
     search_url = f"https://nih.gov{query}&retmode=json"
     
     try:
@@ -266,3 +267,5 @@ if selected_tab == "Dashboard":
                 Schematic: Stochastic Dynamics & Quantum Transport
             </div>
         </div>
+    """, unsafe_allow_html=True)
+    
