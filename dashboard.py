@@ -1,9 +1,5 @@
 import streamlit as st
 import datetime
-import urllib.request
-import urllib.parse
-import xml.etree.ElementTree as ET
-import json
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -12,69 +8,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# --- CACHED PUBMED FETCHING FUNCTION ---
-@st.cache_data(ttl=43200) # Caches data for 12 hours so it loads instantly
-def fetch_recent_papers():
-    # Calculate date range (Look back 7 days to catch all new entries without gaps)
-    end_date = datetime.datetime.now()
-    start_date = end_date - datetime.timedelta(days=7)
-    
-    date_str = f'"{start_date.strftime("%Y/%m/%d")}"[PDAT] : "{end_date.strftime("%Y/%m/%d")}"[PDAT]'
-    
-    # Target high-impact journals and specific translation/ribosome keywords
-    journals = '("Nature"[Journal] OR "Science"[Journal] OR "Cell"[Journal])'
-    keywords = '("protein synthesis"[TIAB] OR "translation"[TIAB] OR "ribosome"[TIAB] OR "mRNA translation"[TIAB])'
-    query = urllib.parse.quote(f"{journals} AND {keywords} AND {date_str}")
-    
-    # CORRECTED API ENDPOINT PATHS
-    search_url = f"https://nih.gov{query}&retmode=json"
-    
-    try:
-        with urllib.request.urlopen(search_url) as response:
-            search_data = json.loads(response.read().decode())
-            id_list = search_data.get("esearchresult", {}).get("idlist", [])
-            
-        if not id_list:
-            return []
-            
-        ids_str = ",".join(id_list)
-        fetch_url = f"https://nih.gov{ids_str}&retmode=xml"
-        
-        with urllib.request.urlopen(fetch_url) as response:
-            xml_data = response.read()
-            
-        root = ET.fromstring(xml_data)
-        papers = []
-        
-        for article in root.findall(".//PubmedArticle"):
-            title = article.find(".//ArticleTitle").text
-            journal = article.find(".//Journal/Title").text
-            pub_date = article.find(".//JournalIssue/PubDate")
-            
-            year = pub_date.find("Year").text if pub_date.find("Year") is not None else ""
-            month = pub_date.find("Month").text if pub_date.find("Month") is not None else ""
-            
-            abstract_elements = article.findall(".//AbstractText")
-            abstract = " ".join([elem.text for elem in abstract_elements if elem.text])
-            
-            doi = ""
-            for el in article.findall(".//ArticleId"):
-                if el.attrib.get("IdType") == "doi":
-                    doi = el.text
-            
-            link = f"https://doi.org{doi}" if doi else f"https://nih.gov{article.find('.//PMID').text}"
-
-            papers.append({
-                "title": title,
-                "journal": journal,
-                "date": f"{month} {year}".strip(),
-                "abstract": abstract if abstract else "Abstract text not indexed on PubMed yet.",
-                "link": link
-            })
-        return papers
-    except Exception as e:
-        return []
 
 # --- SESSION STATE INITIALIZATION (For Reminders) ---
 if 'reminders' not in st.session_state:
@@ -88,7 +21,7 @@ if 'reminders' not in st.session_state:
 st.markdown("""
     <style>
     /* IMPORT FONTS */
-    @import url('https://googleapis.com');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap');
 
     /* GLOBAL RESET & VARIABLES */
     :root {
@@ -111,7 +44,7 @@ st.markdown("""
         font-family: 'Playfair Display', serif;
         color: var(--primary-color);
     }
-    
+   
     h1 { letter-spacing: -0.5px; font-weight: 700; }
     h2 { font-weight: 600; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; }
     p, li { font-size: 1.05rem; line-height: 1.6; color: #4a5568; }
@@ -121,14 +54,14 @@ st.markdown("""
         background-color: #ffffff;
         border-right: 1px solid #e2e8f0;
     }
-    
+   
     .sidebar-profile {
         text-align: center;
         padding: 20px 0;
         border-bottom: 1px solid #edf2f7;
         margin-bottom: 20px;
     }
-    
+   
     .sidebar-name {
         font-family: 'Playfair Display', serif;
         font-size: 1.8rem;
@@ -136,7 +69,7 @@ st.markdown("""
         color: #1a202c;
         margin-bottom: 5px;
     }
-    
+   
     .sidebar-role {
         font-family: 'Lato', sans-serif;
         font-size: 0.9rem;
@@ -155,7 +88,7 @@ st.markdown("""
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         margin-bottom: 20px;
     }
-    
+   
     .feature-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -196,12 +129,12 @@ st.markdown("""
         background-color: #f7fafc;
         color: var(--primary-color);
     }
-    
+   
     /* HIDE STREAMLIT ELEMENTS */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
+   
     </style>
 """, unsafe_allow_html=True)
 
@@ -213,16 +146,17 @@ with st.sidebar:
             <div class="sidebar-role">Theoretical Biophysics</div>
         </div>
     """, unsafe_allow_html=True)
-    
+   
     selected_tab = st.radio(
-        "NAVIGATION", 
+        "NAVIGATION",
         ["Dashboard", "Publications", "Journal Library", "Science Monitor"],
         label_visibility="collapsed"
     )
-    
+   
     st.markdown("---")
     st.markdown("**QUICK TOOLS**")
-    
+   
+    # Simple Todo/Reminder System using Session State
     new_task = st.text_input("Add Reminder", placeholder="e.g., Read Nature paper...")
     if st.button("Add Task") and new_task:
         st.session_state.reminders.append({"task": new_task, "done": False})
@@ -240,15 +174,15 @@ with st.sidebar:
 
 # --- TAB 1: DASHBOARD (HOME) ---
 if selected_tab == "Dashboard":
-    
+   
     # --- SCHEMATIC FIGURE HEADER ---
     st.markdown("""
         <div style="width:100%; height:240px; overflow:hidden; border-radius:12px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2670&auto=format&fit=crop" 
-                 style="width:100%; height:100%; object-fit:cover; opacity: 0.85; filter: contrast(1.2) brightness(0.8);" 
+            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2670&auto=format&fit=crop"
+                 style="width:100%; height:100%; object-fit:cover; opacity: 0.85; filter: contrast(1.2) brightness(0.8);"
                  alt="Biophysics Schematic">
             <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);"></div>
-            
+           
             <!-- OVERLAY EQUATIONS -->
             <div style="position:absolute; top: 20%; left: 10%; color: rgba(255,255,255,0.8); font-family: 'Times New Roman', serif; font-size: 1.5rem; font-style: italic;">
                 iℏ ∂Ψ/∂t = ĤΨ
@@ -268,4 +202,29 @@ if selected_tab == "Dashboard":
             </div>
         </div>
     """, unsafe_allow_html=True)
-    
+   
+    # Header Section
+    col_hero, col_widgets = st.columns([2, 1])
+   
+    with col_hero:
+        st.markdown(f"""
+        <div style="padding-top: 10px;">
+            <h1 style="font-size: 3.5rem; margin-bottom: 10px;">Research Node</h1>
+            <p style="font-size: 1.2rem; color: #718096;">
+                Specializing in Non-Equilibrium Systems & Stochastic Dynamics of Gene Regulation.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("### 🧬 Current Research Focus")
+        st.markdown("""
+        <div class="feature-card">
+            <p><strong>Deciphering the stochastic logic of protein synthesis.</strong></p>
+            <p>My work utilizes refined TASEP models and polymer physics frameworks to understand:</p>
+            <ul>
+                <li>The mechanics of ribosome exchange (NatA).</li>
+                <li>Chromatin conformation dynamics.</li>
+                <li>Translation regulation under stress conditions.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=
