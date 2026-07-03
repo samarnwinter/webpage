@@ -1,7 +1,7 @@
 """Home — run with:  streamlit run Home.py"""
 import streamlit as st
 import style
-from data import PROFILE, METRICS, RESEARCH, PUBLICATIONS
+from data import PROFILE, RESEARCH, PUBLICATIONS, SCIENCE
 
 style.setup("Home")
 p = PROFILE
@@ -24,18 +24,30 @@ st.markdown(f"""
 
 style.codon_strip()
 
-# ---- metrics ------------------------------------------------------------- #
-st.markdown(
-    '<div class="metrics">'
-    + "".join(f'<div class="metric"><div class="n">{n}</div>'
-              f'<div class="k">{k}</div></div>' for n, k in METRICS)
-    + "</div>", unsafe_allow_html=True)
+# ---- protein synthesis explainer ----------------------------------------- #
+st.markdown("## Protein synthesis, quantitatively")
+st.markdown(f"<p style='max-width:74ch;font-size:1.06rem'>{SCIENCE['intro']}</p>",
+            unsafe_allow_html=True)
+st.markdown(f"<p style='max-width:74ch'>{SCIENCE['bridge']}</p>",
+            unsafe_allow_html=True)
 
-# ---- about --------------------------------------------------------------- #
-st.markdown(f"<p style='font-size:1.08rem;max-width:70ch'>{p['lede']}</p>",
-            unsafe_allow_html=True)
-st.markdown(f"<p class='sub' style='margin-top:-.4rem'>{p['background']}</p>",
-            unsafe_allow_html=True)
+c1, c2 = st.columns(2)
+with c1:
+    items = "".join(
+        f"<p style='margin:.2rem 0 .8rem'><strong>{t}</strong><br>"
+        f"<span style='color:var(--muted);font-size:.94rem'>{d}</span></p>"
+        for t, d in SCIENCE["measured"])
+    st.markdown(f'<div class="card"><span class="eyebrow">Measured</span>'
+                f'<h3>Experiments</h3>{items}</div>', unsafe_allow_html=True)
+with c2:
+    lis = "".join(f"<li style='margin:.3rem 0'>{x}</li>" for x in SCIENCE["inferred"])
+    st.markdown(
+        f'<div class="card"><span class="eyebrow">Inferred</span>'
+        f'<h3>What the models recover</h3>'
+        f'<ul style="margin:.3rem 0 0;padding-left:1.1rem">{lis}</ul>'
+        f'<p style="margin-top:.7rem;color:var(--muted);font-size:.92rem">'
+        f'via TASEP lattices &amp; master equations</p></div>',
+        unsafe_allow_html=True)
 
 # ---- research focus ------------------------------------------------------ #
 st.markdown("## Research focus")
