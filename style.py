@@ -149,7 +149,7 @@ a:hover{ text-decoration:underline; }
 
 /* ---- misc --------------------------------------------------------------- */
 hr{ border:none; border-top:1px solid var(--line); margin:1.6rem 0; }
-#MainMenu,footer,header{ visibility:hidden; }
+#MainMenu,footer{ visibility:hidden; }
 @media (max-width:760px){
   .hero{ flex-direction:column-reverse; align-items:flex-start; }
   .hero h1{ font-size:2.3rem; }
