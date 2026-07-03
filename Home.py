@@ -16,7 +16,7 @@ st.markdown(f"""
     <span class="eyebrow">{p['role']} · {p['affiliation']}</span>
     <h1>{p['name']}</h1>
     <p class="lede">{p['tagline']}</p>
-    <p class="sub">{p['fellowship']} · Advised by {p['advisor']}</p>
+    <p class="sub">{p['position']} · {p['group']}</p>
   </div>
   <div class="medallion">{p['initials']}</div>
 </div>
@@ -33,6 +33,8 @@ st.markdown(
 
 # ---- about --------------------------------------------------------------- #
 st.markdown(f"<p style='font-size:1.08rem;max-width:70ch'>{p['lede']}</p>",
+            unsafe_allow_html=True)
+st.markdown(f"<p class='sub' style='margin-top:-.4rem'>{p['background']}</p>",
             unsafe_allow_html=True)
 
 # ---- research focus ------------------------------------------------------ #
