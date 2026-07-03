@@ -149,7 +149,7 @@ a:hover{ text-decoration:underline; }
 
 /* ---- misc --------------------------------------------------------------- */
 hr{ border:none; border-top:1px solid var(--line); margin:1.6rem 0; }
-#MainMenu,footer{ visibility:hidden; }
+#MainMenu,footer,header{ visibility:hidden; }
 @media (max-width:760px){
   .hero{ flex-direction:column-reverse; align-items:flex-start; }
   .hero h1{ font-size:2.3rem; }
@@ -170,8 +170,10 @@ def setup(page_title: str):
 
 def _sidebar():
     p = PROFILE
-    links = [("Google Scholar", p["scholar"]), ("GitHub", p["github"]),
-             ("IIT Jammu profile", p["profile_page"]),
+    links = [("Google Scholar", p["scholar"]),
+             ("Biozentrum", p["profile_page"]),
+             ("LinkedIn", p["linkedin"]),
+             ("GitHub", p["github"]),
              ("Email", f"mailto:{p['email']}")]
     link_html = "".join(f'<a href="{u}" target="_blank">{t} ↗</a>' for t, u in links)
     with st.sidebar:
