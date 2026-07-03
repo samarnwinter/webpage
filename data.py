@@ -31,12 +31,42 @@ PROFILE = {
                     "research-groups-a-z/group/unit/research-group-mihaela-zavolan",
 }
 
-# Headline metrics shown on the home page. Keep these easy to eyeball.
-METRICS = [
-    ("05", "Peer-reviewed papers"),
-    ("Molecular Cell", "Latest venue · 2025"),
-    ("Basel", "Postdoc · Biozentrum"),
-]
+# --------------------------------------------------------------------------- #
+# HOME-PAGE SCIENCE EXPLAINER  (edit the copy freely)
+# --------------------------------------------------------------------------- #
+SCIENCE = {
+    "intro": (
+        "Protein synthesis is one of life's most fundamental and energy-expensive "
+        "processes: ribosomes read messenger RNA codon by codon to build every "
+        "protein a cell needs. How fast, how accurately, and how selectively this "
+        "happens shapes growth, stress response, and disease — yet these dynamics "
+        "unfold too quickly and at too small a scale to watch directly."
+    ),
+    "bridge": (
+        "To study translation quantitatively, high-throughput experiments are "
+        "paired with statistical and biophysical models. The experiments capture "
+        "snapshots of the process; the models turn those snapshots into dynamical, "
+        "multi-dimensional detail that no single measurement reveals on its own."
+    ),
+    "measured": [
+        ("Ribosome profiling (Ribo-seq)",
+         "A codon-resolution map of where ribosomes sit on every transcript — a "
+         "snapshot of translation caught in the act."),
+        ("RNA-seq",
+         "Transcript abundances: the denominator that turns ribosome occupancy "
+         "into translation efficiency."),
+        ("pSILAC",
+         "Pulsed isotope labelling read by mass spectrometry, measuring newly made "
+         "protein — a direct handle on synthesis rates."),
+    ],
+    "inferred": [
+        "Absolute protein synthesis rates",
+        "Translation-initiation rates",
+        "Codon dwell times and elongation velocity",
+        "Ribosome density, current, and traffic",
+        "How codon usage and mRNA structure tune them",
+    ],
+}
 
 # --------------------------------------------------------------------------- #
 # PUBLICATIONS  (newest first). "role" flags your contribution type.
