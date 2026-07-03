@@ -10,28 +10,32 @@ every page reads from here, so you never touch the layout code.
 PROFILE = {
     "name": "Inayat Ullah Irshad",
     "initials": "IUI",
-    "role": "Theoretical & Computational Biophysics",
-    "affiliation": "Department of Physics, IIT Jammu",
+    "role": "Computational Biophysics",           # field label (sidebar + eyebrow)
+    "position": "Postdoctoral Researcher",
+    "affiliation": "Biozentrum, University of Basel",
+    "group": "Zavolan Group",
     "tagline": "Modeling the stochastic logic of protein synthesis.",
     "lede": (
         "I build statistical-physics models of translation — TASEP lattices, "
         "master equations, and ribosome-profiling analysis — to understand how "
         "cells set the rate, accuracy, and stoichiometry of protein production."
     ),
-    "fellowship": "Prime Minister's Research Fellow (PMRF)",
-    "advisor": "Prof. Ajeet K. Sharma",
+    # A single, quiet line of background shown on the home page.
+    "background": "Ph.D. in Physics, IIT Jammu.",
     # Edit these links / email:
-    "email": "your.email@iitjammu.ac.in",   # <-- put your real email here
+    "email": "your.email@unibas.ch",   # <-- put your real Basel email here
     "scholar": "https://scholar.google.com/citations?user=hPcdyDEAAAAJ",
     "github": "https://github.com/samarnwinter",
-    "profile_page": "https://iitjammu.ac.in/pmrf/inayat-ullah-irshad-pmrf",
+    "linkedin": "https://www.linkedin.com/in/inayat-ullah-irshad-233a72a3",
+    "profile_page": "https://www.biozentrum.unibas.ch/research/research-groups/"
+                    "research-groups-a-z/group/unit/research-group-mihaela-zavolan",
 }
 
 # Headline metrics shown on the home page. Keep these easy to eyeball.
 METRICS = [
     ("05", "Peer-reviewed papers"),
-    ("Molecular Cell", "Latest venue (2025)"),
-    ("PMRF", "Research fellowship"),
+    ("Molecular Cell", "Latest venue · 2025"),
+    ("Basel", "Postdoc · Biozentrum"),
 ]
 
 # --------------------------------------------------------------------------- #
