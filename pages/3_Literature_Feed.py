@@ -31,6 +31,9 @@ DEFAULT_QUERY = (
     'OR "translation elongation" OR "translation initiation" '
     'OR "ribosome profiling" OR "Ribo-seq" OR "elongation rate" '
     'OR "ribosome" OR "codon usage" OR "tRNA"'
+    'OR "TASEP" OR "protein synthesis modelling" OR "codon adaptation"'
+    'OR "codon usage bias" OR "uORF translation" OR "UTR"'
+    'OR "mRNA stability" OR "cotranslation process" OR "cotranslation folding"'
 )
 EPMC = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
 SUMMARY_MODEL = "claude-haiku-4-5-20251001"
